@@ -7,10 +7,10 @@
 <style>
   :root {
     color-scheme: light;
-    --navy: #0f1f3d; --blue: #1a3a6e; --blue-mid: #2456a4; --blue-light: #3b82f6; --blue-pale: #eff6ff;
+    --navy: #0f1f3d; --blue-mid: #2456a4;
     --green: #059669; --green-pale: #ecfdf5; --amber: #d97706; --amber-pale: #fffbeb;
     --purple: #7c3aed; --purple-pale: #f5f3ff; --red: #dc2626;
-    --border: #e2e8f0; --bg: #f8fafc; --white: #ffffff; --text: #1e293b; --muted: #64748b;
+    --border: #e2e8f0; --bg: #f8fafc; --text: #1e293b; --muted: #64748b;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
@@ -42,10 +42,44 @@
   .bg-purple { background: linear-gradient(135deg, #7c3aed, #8b5cf6); }
   .step-title h2 { font-size: 30px; font-weight: 800; margin-bottom: 6px; }
   .step-title p { font-size: 16px; color: var(--muted); line-height: 1.6; max-width: 620px; }
-  .focus-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 32px; }
-  .focus-item { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 18px; transition: transform 0.15s, box-shadow 0.15s; }
-  .focus-item:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
-  .focus-icon { font-size: 26px; margin-bottom: 10px; } .focus-label { font-size: 13px; font-weight: 700; margin-bottom: 5px; } .focus-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  /* FOCUS GRID */
+  .focus-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-bottom: 16px; }
+  .focus-item {
+    background: white; border: 2px solid var(--border); border-radius: 12px; padding: 18px;
+    transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, background 0.15s;
+    cursor: pointer; user-select: none; position: relative;
+  }
+  .focus-item:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); border-color: #94d3a2; }
+  .focus-item.selected { border-color: var(--green); background: var(--green-pale); box-shadow: 0 0 0 3px rgba(5,150,105,0.12); transform: translateY(-2px); }
+  .focus-item .click-hint { position: absolute; top: 10px; right: 12px; font-size: 10px; color: var(--muted); font-weight: 600; opacity: 0; transition: opacity 0.15s; letter-spacing: 0.04em; }
+  .focus-item:hover .click-hint { opacity: 1; }
+  .focus-item.selected .click-hint { opacity: 0; }
+  .focus-icon { font-size: 26px; margin-bottom: 10px; }
+  .focus-label { font-size: 13px; font-weight: 700; margin-bottom: 5px; }
+  .focus-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  /* TOPIC Q PANEL */
+  .topic-q-panel {
+    display: none; margin-bottom: 32px;
+    background: white; border: 2px solid var(--green); border-radius: 14px; overflow: hidden;
+    animation: slideDown 0.2s ease;
+  }
+  .topic-q-panel.visible { display: block; }
+  @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  .topic-q-header {
+    background: var(--green-pale); padding: 14px 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #a7f3d0;
+  }
+  .topic-q-header-left { display: flex; align-items: center; gap: 10px; }
+  .topic-q-icon { font-size: 22px; }
+  .topic-q-title { font-size: 14px; font-weight: 800; color: #065f46; }
+  .topic-q-sub { font-size: 12px; color: #059669; margin-top: 1px; }
+  .topic-q-close { background: none; border: none; cursor: pointer; font-size: 20px; color: var(--muted); line-height: 1; padding: 2px 6px; border-radius: 6px; transition: background 0.15s; }
+  .topic-q-close:hover { background: #d1fae5; color: #065f46; }
+  .topic-q-list { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
+  .topic-q-item { border-left: 3px solid var(--green); border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 14px; line-height: 1.5; background: #f0fdf4; color: #1e293b; transition: box-shadow 0.15s; }
+  .topic-q-item:hover { box-shadow: 0 2px 10px rgba(5,150,105,0.12); }
+  /* REST OF STYLES */
   .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; }
   .questions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
   .q-item { background: white; border: 1px solid var(--border); border-left: 4px solid; border-radius: 0 10px 10px 0; padding: 14px 18px; font-size: 14px; line-height: 1.5; transition: box-shadow 0.15s; }
@@ -74,10 +108,8 @@
   .tactic-card { background: white; border: 1px solid var(--border); border-radius: 12px; padding: 20px; text-align: center; transition: transform 0.15s, box-shadow 0.15s; }
   .tactic-card:hover { transform: translateY(-3px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
   .tactic-icon { font-size: 32px; margin-bottom: 10px; } .tactic-name { font-size: 14px; font-weight: 700; margin-bottom: 6px; color: var(--purple); } .tactic-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
-  .flow-bar { background: white; border: 1px solid var(--border); border-radius: 16px; padding: 28px 32px; margin-top: 40px; }
-  .flow-bar h3 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 20px; text-align: center; }
   .flow-steps { display: flex; align-items: center; gap: 0; }
-  .flow-step { flex: 1; text-align: center; padding: 16px 12px; border-radius: 12px; position: relative; }
+  .flow-step { flex: 1; text-align: center; padding: 16px 12px; border-radius: 12px; }
   .flow-step-letter { font-size: 28px; font-weight: 900; } .flow-step-name { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; margin: 4px 0; } .flow-step-goal { font-size: 11px; color: var(--muted); }
   .flow-step.p { background: var(--green-pale); } .flow-step.p .flow-step-letter { color: var(--green); }
   .flow-step.a { background: var(--amber-pale); } .flow-step.a .flow-step-letter { color: var(--amber); }
@@ -94,9 +126,9 @@
 <body>
 <div class="hero">
   <div class="hero-label">Sales Discovery Framework</div>
-  <h1><span>P</span>·<span style="color:#fcd34d">A</span>·<span style="color:#c4b5fd">R</span></h1>
-  <div class="hero-sub">Probe · Align · Raise</div>
-  <div class="hero-desc">A three-step discovery method that guides prospects to their own conclusion — that you have exactly what they need.</div>
+  <h1><span>P</span>&#183;<span style="color:#fcd34d">A</span>&#183;<span style="color:#c4b5fd">R</span></h1>
+  <div class="hero-sub">Probe &#183; Align &#183; Raise</div>
+  <div class="hero-desc">A three-step discovery method that guides prospects to their own conclusion &#8212; that you have exactly what they need.</div>
 </div>
 <div class="par-pills">
   <div class="pill p active" onclick="showPanel('probe',this)"><span class="pill-letter">P</span><span>Probe</span></div>
@@ -105,37 +137,88 @@
   <div class="pill" style="background:#f1f5f9;color:#475569;border-color:#e2e8f0;" onclick="showPanel('flow',this)"><span class="pill-letter" style="font-size:16px;">&#9654;</span><span>Full Flow</span></div>
 </div>
 <div class="main">
+
+  <!-- PROBE -->
   <div id="probe" class="step-panel active">
     <div class="step-header">
       <div class="step-badge bg-green"><div class="letter">P</div><div class="word">Probe</div></div>
-      <div class="step-title"><h2 style="color:var(--green)">Probe</h2><p>Ask open-ended, detail-oriented questions to fully understand their situation. Build a complete picture of their world before you say a word about your product.</p></div>
+      <div class="step-title"><h2 style="color:var(--green)">Probe</h2><p>Ask open-ended, detail-oriented questions to fully understand their situation. Build a complete picture of their world before you say a word about your product. <strong style="color:var(--green)">Click any topic below to see specific questions.</strong></p></div>
     </div>
-    <div class="section-title">What You're Uncovering</div>
+
+    <div class="section-title">What You&#39;re Uncovering</div>
     <div class="focus-grid">
-      <div class="focus-item"><div class="focus-icon">&#127970;</div><div class="focus-label">Business Situation</div><div class="focus-desc">Company goals, growth stage, org structure, key priorities this year</div></div>
-      <div class="focus-item"><div class="focus-icon">&#128296;</div><div class="focus-label">Tech Stack</div><div class="focus-desc">Languages, cloud platforms, CI/CD tools, version control, dev tooling</div></div>
-      <div class="focus-item"><div class="focus-icon">&#127919;</div><div class="focus-label">Tech Objectives</div><div class="focus-desc">What they're trying to achieve technically — speed, scale, quality, security</div></div>
-      <div class="focus-item"><div class="focus-icon">&#128640;</div><div class="focus-label">Active Initiatives</div><div class="focus-desc">Current projects, migrations, hires, transformation programs underway</div></div>
-      <div class="focus-item"><div class="focus-icon">&#128101;</div><div class="focus-label">Team Structure</div><div class="focus-desc">Engineering headcount, team size, review processes, how work gets done</div></div>
-      <div class="focus-item"><div class="focus-icon">&#128207;</div><div class="focus-label">Metrics &amp; KPIs</div><div class="focus-desc">How they measure success — velocity, quality, uptime, deployment frequency</div></div>
+      <div class="focus-item" onclick="showTopicQ('business',this)">
+        <span class="click-hint">TAP FOR Qs &#8594;</span>
+        <div class="focus-icon">&#127970;</div>
+        <div class="focus-label">Business Situation</div>
+        <div class="focus-desc">Company goals, growth stage, org structure, key priorities this year</div>
+      </div>
+      <div class="focus-item" onclick="showTopicQ('stack',this)">
+        <span class="click-hint">TAP FOR Qs &#8594;</span>
+        <div class="focus-icon">&#128296;</div>
+        <div class="focus-label">Tech Stack</div>
+        <div class="focus-desc">Languages, cloud platforms, CI/CD tools, version control, dev tooling</div>
+      </div>
+      <div class="focus-item" onclick="showTopicQ('objectives',this)">
+        <span class="click-hint">TAP FOR Qs &#8594;</span>
+        <div class="focus-icon">&#127919;</div>
+        <div class="focus-label">Tech Objectives</div>
+        <div class="focus-desc">What they&#39;re trying to achieve technically &#8212; speed, scale, quality, security</div>
+      </div>
+      <div class="focus-item" onclick="showTopicQ('initiatives',this)">
+        <span class="click-hint">TAP FOR Qs &#8594;</span>
+        <div class="focus-icon">&#128640;</div>
+        <div class="focus-label">Active Initiatives</div>
+        <div class="focus-desc">Current projects, migrations, hires, transformation programs underway</div>
+      </div>
+      <div class="focus-item" onclick="showTopicQ('team',this)">
+        <span class="click-hint">TAP FOR Qs &#8594;</span>
+        <div class="focus-icon">&#128101;</div>
+        <div class="focus-label">Team Structure</div>
+        <div class="focus-desc">Engineering headcount, team size, review processes, how work gets done</div>
+      </div>
+      <div class="focus-item" onclick="showTopicQ('metrics',this)">
+        <span class="click-hint">TAP FOR Qs &#8594;</span>
+        <div class="focus-icon">&#128207;</div>
+        <div class="focus-label">Metrics &amp; KPIs</div>
+        <div class="focus-desc">How they measure success &#8212; velocity, quality, uptime, deployment frequency</div>
+      </div>
     </div>
-    <div class="section-title">Probe Questions</div>
+
+    <!-- TOPIC Q PANEL -->
+    <div id="topic-q-panel" class="topic-q-panel">
+      <div class="topic-q-header">
+        <div class="topic-q-header-left">
+          <span class="topic-q-icon" id="tq-icon"></span>
+          <div>
+            <div class="topic-q-title" id="tq-title"></div>
+            <div class="topic-q-sub" id="tq-sub"></div>
+          </div>
+        </div>
+        <button class="topic-q-close" onclick="closeTopicQ()" title="Close">&#10005;</button>
+      </div>
+      <div class="topic-q-list" id="tq-list"></div>
+    </div>
+
+    <div class="section-title">Core Probe Questions</div>
     <div class="questions">
-      <div class="q-item green">What does your engineering org look like today — how many developers, how are they organized?</div>
-      <div class="q-item green">Walk me through your current development workflow — from code commit to production.</div>
+      <div class="q-item green">What does your engineering org look like today &#8212; how many developers, how are they organized?</div>
+      <div class="q-item green">Walk me through your current development workflow &#8212; from code commit to production.</div>
       <div class="q-item green">What languages and cloud platforms are your teams working with?</div>
       <div class="q-item green">What are the two or three biggest technical priorities for your team this year?</div>
       <div class="q-item green">Are there any major migrations, platform changes, or new product initiatives underway right now?</div>
-      <div class="q-item green">How do you measure engineering quality and velocity today? What does "good" look like for your team?</div>
+      <div class="q-item green">How do you measure engineering quality and velocity today? What does &#8220;good&#8221; look like for your team?</div>
     </div>
     <div class="section-title">Tips for Probing</div>
     <div class="tips-grid">
       <div class="tip-card"><div class="tip-icon">&#127897;</div><div><div class="tip-label">Talk 20%, Listen 80%</div><div class="tip-text">Probe is about them, not you. Ask one question, then stop and listen fully before asking another.</div></div></div>
-      <div class="tip-card"><div class="tip-icon">&#128269;</div><div><div class="tip-label">Go Deeper, Not Wider</div><div class="tip-text">When they mention a problem, dig in. "Tell me more about that" is your best follow-up.</div></div></div>
-      <div class="tip-card"><div class="tip-icon">&#128221;</div><div><div class="tip-label">Take Notes Visibly</div><div class="tip-text">Shows you care. Their exact words matter — you'll use them in Align.</div></div></div>
-      <div class="tip-card"><div class="tip-icon">&#128683;</div><div><div class="tip-label">Don't Pitch Yet</div><div class="tip-text">Resist the urge to respond to pain signals with product features. Earn the right to pitch.</div></div></div>
+      <div class="tip-card"><div class="tip-icon">&#128269;</div><div><div class="tip-label">Go Deeper, Not Wider</div><div class="tip-text">When they mention a problem, dig in. &#8220;Tell me more about that&#8221; is your best follow-up.</div></div></div>
+      <div class="tip-card"><div class="tip-icon">&#128221;</div><div><div class="tip-label">Take Notes Visibly</div><div class="tip-text">Shows you care. Their exact words matter &#8212; you&#39;ll use them in Align.</div></div></div>
+      <div class="tip-card"><div class="tip-icon">&#128683;</div><div><div class="tip-label">Don&#39;t Pitch Yet</div><div class="tip-text">Resist the urge to respond to pain signals with features. Earn the right to pitch.</div></div></div>
     </div>
   </div>
+
+  <!-- ALIGN -->
   <div id="align" class="step-panel">
     <div class="step-header">
       <div class="step-badge bg-amber"><div class="letter">A</div><div class="word">Align</div></div>
@@ -143,36 +226,38 @@
     </div>
     <div class="section-title">The Align Loop</div>
     <div style="display:flex;gap:16px;margin-bottom:32px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:200px;background:white;border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center;"><div style="font-size:32px;margin-bottom:10px;">&#128072;</div><div style="font-weight:700;font-size:14px;margin-bottom:6px;color:var(--amber)">Reflect</div><div style="font-size:13px;color:var(--muted)">Mirror their exact words back. Don't paraphrase — use their language.</div></div>
+      <div style="flex:1;min-width:200px;background:white;border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center;"><div style="font-size:32px;margin-bottom:10px;">&#128072;</div><div style="font-weight:700;font-size:14px;margin-bottom:6px;color:var(--amber)">Reflect</div><div style="font-size:13px;color:var(--muted)">Mirror their exact words back. Don&#39;t paraphrase &#8212; use their language.</div></div>
       <div style="display:flex;align-items:center;color:var(--muted);font-size:22px;">&#8594;</div>
-      <div style="flex:1;min-width:200px;background:white;border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center;"><div style="font-size:32px;margin-bottom:10px;">&#129309;</div><div style="font-weight:700;font-size:14px;margin-bottom:6px;color:var(--amber)">Empathize</div><div style="font-size:13px;color:var(--muted)">Acknowledge the weight of what they're dealing with. Validate without exaggerating.</div></div>
+      <div style="flex:1;min-width:200px;background:white;border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center;"><div style="font-size:32px;margin-bottom:10px;">&#129309;</div><div style="font-weight:700;font-size:14px;margin-bottom:6px;color:var(--amber)">Empathize</div><div style="font-size:13px;color:var(--muted)">Acknowledge the weight of what they&#39;re dealing with. Validate without exaggerating.</div></div>
       <div style="display:flex;align-items:center;color:var(--muted);font-size:22px;">&#8594;</div>
-      <div style="flex:1;min-width:200px;background:white;border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center;"><div style="font-size:32px;margin-bottom:10px;">&#9989;</div><div style="font-weight:700;font-size:14px;margin-bottom:6px;color:var(--amber)">Confirm</div><div style="font-size:13px;color:var(--muted)">Check your understanding. "Is that right?" gives them a chance to correct or add more.</div></div>
+      <div style="flex:1;min-width:200px;background:white;border:1px solid var(--border);border-radius:12px;padding:22px;text-align:center;"><div style="font-size:32px;margin-bottom:10px;">&#9989;</div><div style="font-weight:700;font-size:14px;margin-bottom:6px;color:var(--amber)">Confirm</div><div style="font-size:13px;color:var(--muted)">Check your understanding. &#8220;Is that right?&#8221; gives them a chance to correct or add more.</div></div>
     </div>
     <div class="section-title">Alignment Phrases</div>
     <div class="phrase-list">
-      <div class="phrase-item"><span>So if I'm hearing you correctly — you're scaling the engineering team rapidly, but the code review process isn't keeping up with that growth. Is that right?</span></div>
-      <div class="phrase-item"><span>That makes total sense. You're under pressure to ship faster, but not at the cost of quality — and right now those two things feel like they're in tension.</span></div>
-      <div class="phrase-item"><span>It sounds like the DevSecOps mandate came from the top, but the tooling to support it hasn't fully caught up yet. That's a really common challenge for teams at your growth stage.</span></div>
-      <div class="phrase-item"><span>You mentioned that your senior engineers are spending a disproportionate amount of time on review. If I were in your shoes, I'd want to solve that before it becomes a retention issue.</span></div>
-      <div class="phrase-item"><span>Just to make sure I've got the full picture — the main friction points are [X, Y, Z]. Did I capture that?</span></div>
+      <div class="phrase-item"><span>So if I&#39;m hearing you correctly &#8212; you&#39;re scaling the engineering team rapidly, but the code review process isn&#39;t keeping up with that growth. Is that right?</span></div>
+      <div class="phrase-item"><span>That makes total sense. You&#39;re under pressure to ship faster, but not at the cost of quality &#8212; and right now those two things feel like they&#39;re in tension.</span></div>
+      <div class="phrase-item"><span>It sounds like the DevSecOps mandate came from the top, but the tooling to support it hasn&#39;t fully caught up yet. That&#39;s a really common challenge for teams at your growth stage.</span></div>
+      <div class="phrase-item"><span>You mentioned that your senior engineers are spending a disproportionate amount of time on review. If I were in your shoes, I&#39;d want to solve that before it becomes a retention issue.</span></div>
+      <div class="phrase-item"><span>Just to make sure I&#39;ve got the full picture &#8212; the main friction points are [X, Y, Z]. Did I capture that?</span></div>
     </div>
-    <div class="section-title">Alignment Do's &amp; Don'ts</div>
+    <div class="section-title">Alignment Do&#39;s &amp; Don&#39;ts</div>
     <div class="tips-grid">
-      <div class="tip-card" style="border-left:3px solid var(--green);"><div class="tip-icon">&#9989;</div><div><div class="tip-label">Do: Use their words</div><div class="tip-text">If they said "our review process is a bottleneck," echo their exact framing.</div></div></div>
-      <div class="tip-card" style="border-left:3px solid var(--green);"><div class="tip-icon">&#9989;</div><div><div class="tip-label">Do: Name the emotion</div><div class="tip-text">"That sounds frustrating." Simple acknowledgment signals you're a partner, not just a vendor.</div></div></div>
-      <div class="tip-card" style="border-left:3px solid var(--red);"><div class="tip-icon">&#10060;</div><div><div class="tip-label">Don't: Invent problems</div><div class="tip-text">Only reflect back what they actually said. Adding problems they didn't mention destroys trust.</div></div></div>
-      <div class="tip-card" style="border-left:3px solid var(--red);"><div class="tip-icon">&#10060;</div><div><div class="tip-label">Don't: Pivot to pitch</div><div class="tip-text">Alignment is not your segue to "and that's why our product..." — that comes in Raise.</div></div></div>
+      <div class="tip-card" style="border-left:3px solid var(--green);"><div class="tip-icon">&#9989;</div><div><div class="tip-label">Do: Use their words</div><div class="tip-text">If they said &#8220;our review process is a bottleneck,&#8221; echo their exact framing.</div></div></div>
+      <div class="tip-card" style="border-left:3px solid var(--green);"><div class="tip-icon">&#9989;</div><div><div class="tip-label">Do: Name the emotion</div><div class="tip-text">&#8220;That sounds frustrating.&#8221; Simple acknowledgment signals you&#39;re a partner, not just a vendor.</div></div></div>
+      <div class="tip-card" style="border-left:3px solid var(--red);"><div class="tip-icon">&#10060;</div><div><div class="tip-label">Don&#39;t: Invent problems</div><div class="tip-text">Only reflect back what they actually said. Adding problems they didn&#39;t mention destroys trust.</div></div></div>
+      <div class="tip-card" style="border-left:3px solid var(--red);"><div class="tip-icon">&#10060;</div><div><div class="tip-label">Don&#39;t: Pivot to pitch</div><div class="tip-text">Alignment is not your segue to &#8220;and that&#39;s why our product...&#8221; &#8212; that comes in Raise.</div></div></div>
     </div>
   </div>
+
+  <!-- RAISE -->
   <div id="raise" class="step-panel">
     <div class="step-header">
       <div class="step-badge bg-purple"><div class="letter">R</div><div class="word">Raise</div></div>
-      <div class="step-title"><h2 style="color:var(--purple)">Raise</h2><p>Move the prospect up the decision ladder — from unaware to convinced. Highlight the pain and gently challenge their thinking until <em>they</em> reach the conclusion that they need what you offer. Never push — guide.</p></div>
+      <div class="step-title"><h2 style="color:var(--purple)">Raise</h2><p>Move the prospect up the decision ladder &#8212; from unaware to convinced. Highlight the pain and gently challenge their thinking until <em>they</em> reach the conclusion that they need what you offer. Never push &#8212; guide.</p></div>
     </div>
     <div class="ladder-section">
       <h3>&#129338; The Decision Ladder</h3>
-      <div class="ladder-sub">Each rung represents a shift in the prospect's mindset. Your job is to help them climb — one rung at a time.</div>
+      <div class="ladder-sub">Each rung represents a shift in the prospect&#39;s mindset. Click a rung to see example language.</div>
       <div class="ladder-wrap">
         <div class="ladder-svg-wrap">
           <svg width="220" height="480" viewBox="0 0 220 480" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -196,31 +281,33 @@
           </svg>
         </div>
         <div class="rung-details">
-          <div class="rung-detail" id="rung6" onclick="activateRung(6)" style="border-color:#4c1d95;background:#f5f3ff;"><div class="rung-num" style="background:#4c1d95;">6</div><div class="rung-text"><div class="rung-name">Advocate</div><div class="rung-desc">They're sold and selling for you internally. Champion status.</div><div class="rung-example">"I've already mentioned this to my CTO — can you put together a one-pager I can share?"</div></div></div>
-          <div class="rung-detail" id="rung5" onclick="activateRung(5)"><div class="rung-num" style="background:#7c3aed;">5</div><div class="rung-text"><div class="rung-name">Committed to Change</div><div class="rung-desc">They agree the status quo must change and are actively evaluating options.</div><div class="rung-example">"What would a trial look like? I want to show my team."</div></div></div>
-          <div class="rung-detail active" id="rung4" onclick="activateRung(4)"><div class="rung-num" style="background:#6d28d9;">4</div><div class="rung-text"><div class="rung-name">Actively Seeking a Solution</div><div class="rung-desc">Pain is real enough that they're now looking for answers.</div><div class="rung-example">"We've actually been looking at a couple of options in this space."</div></div></div>
-          <div class="rung-detail" id="rung3" onclick="activateRung(3)"><div class="rung-num" style="background:#8b5cf6;">3</div><div class="rung-text"><div class="rung-name">Feeling the Pain</div><div class="rung-desc">They recognize the gap is causing real problems — slowdowns, quality issues, team friction.</div><div class="rung-example">"Yeah, our review backlog is definitely slowing us down."</div></div></div>
-          <div class="rung-detail" id="rung2" onclick="activateRung(2)"><div class="rung-num" style="background:#d97706;">2</div><div class="rung-text"><div class="rung-name">Aware of the Gap</div><div class="rung-desc">They know something could be better, but haven't felt the urgency yet.</div><div class="rung-example">"We've talked about improving our review process but haven't prioritized it."</div></div></div>
-          <div class="rung-detail" id="rung1" onclick="activateRung(1)"><div class="rung-num" style="background:#94a3b8;">1</div><div class="rung-text"><div class="rung-name">Unaware / Status Quo</div><div class="rung-desc">No felt need. Current state seems fine to them. Your job: gently surface the gap.</div><div class="rung-example">"Our process works. Developers review each other's code."</div></div></div>
+          <div class="rung-detail" id="rung6" onclick="activateRung(6)" style="border-color:#4c1d95;background:#f5f3ff;"><div class="rung-num" style="background:#4c1d95;">6</div><div class="rung-text"><div class="rung-name">&#127942; Advocate</div><div class="rung-desc">They&#39;re sold and selling for you internally. Champion status.</div><div class="rung-example">&#8220;I&#39;ve already mentioned this to my CTO &#8212; can you put together a one-pager I can share?&#8221;</div></div></div>
+          <div class="rung-detail" id="rung5" onclick="activateRung(5)"><div class="rung-num" style="background:#7c3aed;">5</div><div class="rung-text"><div class="rung-name">&#9989; Committed to Change</div><div class="rung-desc">They agree the status quo must change and are actively evaluating options.</div><div class="rung-example">&#8220;What would a trial look like? I want to show my team.&#8221;</div></div></div>
+          <div class="rung-detail active" id="rung4" onclick="activateRung(4)"><div class="rung-num" style="background:#6d28d9;">4</div><div class="rung-text"><div class="rung-name">&#128269; Actively Seeking a Solution</div><div class="rung-desc">Pain is real enough that they&#39;re now looking for answers.</div><div class="rung-example">&#8220;We&#39;ve actually been looking at a couple of options in this space.&#8221;</div></div></div>
+          <div class="rung-detail" id="rung3" onclick="activateRung(3)"><div class="rung-num" style="background:#8b5cf6;">3</div><div class="rung-text"><div class="rung-name">&#128532; Feeling the Pain</div><div class="rung-desc">They recognize the gap is causing real problems &#8212; slowdowns, quality issues, team friction.</div><div class="rung-example">&#8220;Yeah, our review backlog is definitely slowing us down.&#8221;</div></div></div>
+          <div class="rung-detail" id="rung2" onclick="activateRung(2)"><div class="rung-num" style="background:#d97706;">2</div><div class="rung-text"><div class="rung-name">&#129300; Aware of the Gap</div><div class="rung-desc">They know something could be better, but haven&#39;t felt the urgency yet.</div><div class="rung-example">&#8220;We&#39;ve talked about improving our review process but haven&#39;t prioritized it.&#8221;</div></div></div>
+          <div class="rung-detail" id="rung1" onclick="activateRung(1)"><div class="rung-num" style="background:#94a3b8;">1</div><div class="rung-text"><div class="rung-name">&#128566; Unaware / Status Quo</div><div class="rung-desc">No felt need. Current state seems fine. Your job: gently surface the gap.</div><div class="rung-example">&#8220;Our process works. Developers review each other&#39;s code.&#8221;</div></div></div>
         </div>
       </div>
     </div>
     <div class="section-title">Raise Tactics</div>
     <div class="tactic-grid">
       <div class="tactic-card"><div class="tactic-icon">&#128371;</div><div class="tactic-name">Surface the Gap</div><div class="tactic-desc">Ask questions that expose the delta between where they are and where they want to be.</div></div>
-      <div class="tactic-card"><div class="tactic-icon">&#128161;</div><div class="tactic-name">Highlight the Cost</div><div class="tactic-desc">Help them quantify what the status quo is costing — in time, quality, engineer hours, or risk.</div></div>
-      <div class="tactic-card"><div class="tactic-icon">&#129330;</div><div class="tactic-name">Gentle Challenge</div><div class="tactic-desc">Respectfully question assumptions. "Have you thought about what happens when the team doubles?"</div></div>
+      <div class="tactic-card"><div class="tactic-icon">&#128161;</div><div class="tactic-name">Highlight the Cost</div><div class="tactic-desc">Help them quantify what the status quo is costing &#8212; in time, quality, engineer hours, or risk.</div></div>
+      <div class="tactic-card"><div class="tactic-icon">&#129330;</div><div class="tactic-name">Gentle Challenge</div><div class="tactic-desc">Respectfully question assumptions. &#8220;Have you thought about what happens when the team doubles?&#8221;</div></div>
     </div>
     <div class="section-title">Raise Questions</div>
     <div class="questions">
-      <div class="q-item purple">You mentioned senior engineers spend time on reviews — what's the rough time cost per week across the team?</div>
+      <div class="q-item purple">You mentioned senior engineers spend time on reviews &#8212; what&#39;s the rough time cost per week across the team?</div>
       <div class="q-item purple">If your engineering headcount doubles in the next year, does your current review process scale with that?</div>
       <div class="q-item purple">What happens to your shipping velocity when a key reviewer is out or overloaded?</div>
       <div class="q-item purple">How much of your DevSecOps mandate is actually enforced at the PR level today, versus aspirational?</div>
       <div class="q-item purple">If you could get that review time back, what would your team do with it?</div>
-      <div class="q-item purple">What's the cost to morale and throughput if junior engineers aren't getting timely, detailed feedback on their PRs?</div>
+      <div class="q-item purple">What&#39;s the cost to morale and throughput if junior engineers aren&#39;t getting timely, detailed feedback on their PRs?</div>
     </div>
   </div>
+
+  <!-- FULL FLOW -->
   <div id="flow" class="step-panel">
     <div style="background:white;border:1px solid var(--border);border-radius:16px;padding:32px;margin-bottom:28px;">
       <div style="text-align:center;margin-bottom:28px;"><div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:var(--muted);margin-bottom:8px;">The Complete PAR Flow</div><div style="font-size:15px;color:var(--text);">Each step builds on the last. Skip one and the whole sequence breaks down.</div></div>
@@ -233,20 +320,121 @@
       </div>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-bottom:28px;">
-      <div style="background:var(--green-pale);border:1px solid #a7f3d0;border-radius:12px;padding:22px;"><div style="font-size:22px;margin-bottom:8px;">&#127919;</div><div style="font-size:13px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Probe Goal</div><div style="font-size:13px;color:#065f46;line-height:1.6;">Know their stack, org, goals, and initiatives better than they've articulated them before.</div></div>
-      <div style="background:var(--amber-pale);border:1px solid #fde68a;border-radius:12px;padding:22px;"><div style="font-size:22px;margin-bottom:8px;">&#129710;</div><div style="font-size:13px;font-weight:800;color:var(--amber);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Align Goal</div><div style="font-size:13px;color:#92400e;line-height:1.6;">Make them feel genuinely heard — not just processed. Trust unlocks honesty.</div></div>
+      <div style="background:var(--green-pale);border:1px solid #a7f3d0;border-radius:12px;padding:22px;"><div style="font-size:22px;margin-bottom:8px;">&#127919;</div><div style="font-size:13px;font-weight:800;color:var(--green);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Probe Goal</div><div style="font-size:13px;color:#065f46;line-height:1.6;">Know their stack, org, goals, and initiatives better than they&#39;ve articulated them before.</div></div>
+      <div style="background:var(--amber-pale);border:1px solid #fde68a;border-radius:12px;padding:22px;"><div style="font-size:22px;margin-bottom:8px;">&#129710;</div><div style="font-size:13px;font-weight:800;color:var(--amber);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Align Goal</div><div style="font-size:13px;color:#92400e;line-height:1.6;">Make them feel genuinely heard &#8212; not just processed. Trust unlocks honesty.</div></div>
       <div style="background:var(--purple-pale);border:1px solid #ddd6fe;border-radius:12px;padding:22px;"><div style="font-size:22px;margin-bottom:8px;">&#129338;</div><div style="font-size:13px;font-weight:800;color:var(--purple);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Raise Goal</div><div style="font-size:13px;color:#4c1d95;line-height:1.6;">They conclude on their own that the status quo is costing them. You guided, not pushed.</div></div>
     </div>
     <div style="background:var(--navy);color:white;border-radius:16px;padding:32px;text-align:center;">
       <div style="font-size:14px;opacity:0.7;text-transform:uppercase;letter-spacing:0.1em;margin-bottom:12px;">The Golden Rule of PAR</div>
-      <div style="font-size:20px;font-weight:700;line-height:1.6;max-width:600px;margin:0 auto;">"The best salespeople don't <em>tell</em> prospects what they need. They ask questions until the prospect <em>tells them</em>."</div>
+      <div style="font-size:20px;font-weight:700;line-height:1.6;max-width:600px;margin:0 auto;">&#8220;The best salespeople don&#39;t <em>tell</em> prospects what they need. They ask questions until the prospect <em>tells them</em>.&#8221;</div>
     </div>
   </div>
+
 </div>
 <div class="footer">PAR Sales Discovery Framework &middot; CodeRabbit Sales Enablement</div>
+
 <script>
-  function showPanel(id,el){document.querySelectorAll('.step-panel').forEach(p=>p.classList.remove('active'));document.querySelectorAll('.pill').forEach(p=>p.classList.remove('active'));document.getElementById(id).classList.add('active');if(el)el.classList.add('active');}
-  function activateRung(n){document.querySelectorAll('.rung-detail').forEach(r=>r.classList.remove('active'));document.getElementById('rung'+n).classList.add('active');}
+  const TOPIC_DATA = {
+    business: {
+      icon: '&#127970;', label: 'Business Situation',
+      sub: '4 questions to map their business context',
+      qs: [
+        "What are your top company-level priorities for this year &#8212; and how does engineering factor into those?",
+        "Is the business in a growth, optimization, or transformation phase right now?",
+        "How does engineering align to your company&#39;s strategic initiatives? Who owns the roadmap?",
+        "Are there any board-level or exec-level pressures that are changing what engineering needs to deliver?"
+      ]
+    },
+    stack: {
+      icon: '&#128296;', label: 'Tech Stack',
+      sub: '4 questions to understand their tooling',
+      qs: [
+        "What languages are your teams primarily working in?",
+        "What cloud provider(s) are you on &#8212; AWS, GCP, Azure, or multi-cloud?",
+        "Walk me through your CI/CD pipeline &#8212; what tools are you using today?",
+        "How do you handle version control and branching strategy across teams?"
+      ]
+    },
+    objectives: {
+      icon: '&#127919;', label: 'Tech Objectives',
+      sub: '4 questions to uncover what they&#39;re optimizing for',
+      qs: [
+        "What does &#8220;good engineering&#8221; look like to your team right now &#8212; speed, quality, security, or all three?",
+        "Where are you feeling the most friction in the development lifecycle today?",
+        "What technical debt is most top of mind, and how much bandwidth do you have to address it?",
+        "Are there scalability or reliability challenges you&#39;re actively working through?"
+      ]
+    },
+    initiatives: {
+      icon: '&#128640;', label: 'Active Initiatives',
+      sub: '4 questions to surface what&#39;s in flight',
+      qs: [
+        "Are there any major migrations or platform changes underway right now?",
+        "Any new product launches or features that are creating pressure on the eng team?",
+        "Are you actively hiring engineers &#8212; and how is headcount growth changing team dynamics?",
+        "Is there an AI or ML integration effort happening on the engineering side?"
+      ]
+    },
+    team: {
+      icon: '&#128101;', label: 'Team Structure',
+      sub: '4 questions to understand how they work',
+      qs: [
+        "How many engineers do you have total, and how are they organized into teams?",
+        "How does your code review process work &#8212; who reviews, and what&#39;s the expected turnaround time?",
+        "How do junior and senior engineers collaborate? Is there a formal mentorship or pairing structure?",
+        "Do you have dedicated platform or DevOps engineers, or is that shared responsibility across teams?"
+      ]
+    },
+    metrics: {
+      icon: '&#128207;', label: 'Metrics &amp; KPIs',
+      sub: '4 questions to learn how they measure success',
+      qs: [
+        "What does your deployment frequency look like &#8212; how often are you shipping to production?",
+        "How do you track code quality &#8212; do you have automated quality gates in your pipeline?",
+        "Do you measure PR cycle time or time-to-merge today? What&#39;s your benchmark?",
+        "How do you define developer productivity &#8212; is that something you actively report on to leadership?"
+      ]
+    }
+  };
+
+  let currentTopic = null;
+
+  function showTopicQ(topic, el) {
+    if (currentTopic === topic) { closeTopicQ(); return; }
+    currentTopic = topic;
+    document.querySelectorAll('.focus-item').forEach(i => i.classList.remove('selected'));
+    el.classList.add('selected');
+    const data = TOPIC_DATA[topic];
+    document.getElementById('tq-icon').innerHTML = data.icon;
+    document.getElementById('tq-title').innerHTML = data.label;
+    document.getElementById('tq-sub').textContent = data.sub;
+    const list = document.getElementById('tq-list');
+    list.innerHTML = data.qs.map(q => '<div class="topic-q-item">' + q + '</div>').join('');
+    const panel = document.getElementById('topic-q-panel');
+    panel.classList.remove('visible');
+    void panel.offsetWidth;
+    panel.classList.add('visible');
+    setTimeout(() => panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  }
+
+  function closeTopicQ() {
+    currentTopic = null;
+    document.querySelectorAll('.focus-item').forEach(i => i.classList.remove('selected'));
+    document.getElementById('topic-q-panel').classList.remove('visible');
+  }
+
+  function showPanel(id, el) {
+    document.querySelectorAll('.step-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    if (el) el.classList.add('active');
+    closeTopicQ();
+  }
+
+  function activateRung(n) {
+    document.querySelectorAll('.rung-detail').forEach(r => r.classList.remove('active'));
+    document.getElementById('rung' + n).classList.add('active');
+  }
 </script>
 </body>
 </html>
