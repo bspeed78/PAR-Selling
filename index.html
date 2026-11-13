@@ -79,6 +79,11 @@
   .topic-q-list { padding: 16px 20px; display: flex; flex-direction: column; gap: 8px; }
   .topic-q-item { border-left: 3px solid var(--green); border-radius: 0 8px 8px 0; padding: 10px 14px; font-size: 14px; line-height: 1.5; background: #f0fdf4; color: #1e293b; transition: box-shadow 0.15s; }
   .topic-q-item:hover { box-shadow: 0 2px 10px rgba(5,150,105,0.12); }
+  .topic-q-divider { display: flex; align-items: center; gap: 10px; margin: 10px 0 2px; font-size: 11px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); }
+  .topic-q-divider::after { content: ''; flex: 1; height: 1px; background: #fde68a; }
+  .topic-q-item.diy { border-left-color: var(--amber); background: var(--amber-pale); }
+  .topic-q-item.diy:hover { box-shadow: 0 2px 10px rgba(217,119,6,0.15); }
+  .diy-tag { display: inline-block; background: var(--amber); color: white; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; padding: 2px 7px; border-radius: 10px; margin-right: 8px; vertical-align: 1px; }
   /* REST OF STYLES */
   .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); margin-bottom: 14px; }
   .questions { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
@@ -337,62 +342,98 @@
   const TOPIC_DATA = {
     business: {
       icon: '&#127970;', label: 'Business Situation',
-      sub: '4 questions to map their business context',
+      sub: '5 core questions + 3 DIY deep-dive',
       qs: [
-        "What are your top company-level priorities for this year &#8212; and how does engineering factor into those?",
-        "Is the business in a growth, optimization, or transformation phase right now?",
-        "How does engineering align to your company&#39;s strategic initiatives? Who owns the roadmap?",
-        "Are there any board-level or exec-level pressures that are changing what engineering needs to deliver?"
+        "What are the two or three business outcomes engineering is being held accountable for this year, and how does code delivery tie to them?",
+        "How has engineering headcount or output changed in the last 12 months, and what does the plan look like for the next 12?",
+        "Where is leadership feeling pressure right now &#8212; shipping faster, cutting cost, reducing risk, or all three?",
+        "How much code is being written with AI assistants today, and how has that changed what lands in PRs?",
+        "When leadership talks about AI for engineering, who owns that decision &#8212; and is there a build-vs-buy discussion happening?"
+      ],
+      diy: [
+        "What&#39;s the all-in budget you&#39;d attribute to a homegrown review tool &#8212; engineering time, model/API spend, and infrastructure? Has anyone added that up?",
+        "If leadership asked &#8220;why build instead of buy?&#8221;, what would the answer be? What&#39;s the savings case, and who signed off on it?",
+        "What else could the engineers building and maintaining it be shipping? How do you weigh that against your roadmap?"
       ]
     },
     stack: {
       icon: '&#128296;', label: 'Tech Stack',
-      sub: '4 questions to understand their tooling',
+      sub: '5 core questions + 3 DIY deep-dive',
       qs: [
-        "What languages are your teams primarily working in?",
-        "What cloud provider(s) are you on &#8212; AWS, GCP, Azure, or multi-cloud?",
-        "Walk me through your CI/CD pipeline &#8212; what tools are you using today?",
-        "How do you handle version control and branching strategy across teams?"
+        "Which languages, frameworks, and repo structure (monorepo vs. many repos) do your teams work in?",
+        "What do you use for source control and CI/CD &#8212; GitHub, GitLab, Bitbucket, Azure DevOps, Jenkins?",
+        "Which AI coding tools are developers using today &#8212; Copilot, Cursor, Claude Code, others? Is usage sanctioned or ad hoc?",
+        "Do you have any LLM-based review running today &#8212; a GitHub Action, a script calling an API, a built-in Copilot review? Who built it?",
+        "What linters, SAST, and static analysis run on every PR, and how do developers react to their output?"
+      ],
+      diy: [
+        "Which models and providers does your review tooling call today, and how is that wired in &#8212; direct API, gateway, or a vendor SDK?",
+        "How do you give the model codebase context &#8212; diff only, full files, repo indexing, retrieval? What happens on large PRs or monorepos?",
+        "Where does it run (GitHub Actions, self-hosted runners, a service), and how are secrets, rate limits, and retries handled?"
       ]
     },
     objectives: {
       icon: '&#127919;', label: 'Tech Objectives',
-      sub: '4 questions to uncover what they&#39;re optimizing for',
+      sub: '5 core questions + 3 DIY deep-dive',
       qs: [
-        "What does &#8220;good engineering&#8221; look like to your team right now &#8212; speed, quality, security, or all three?",
-        "Where are you feeling the most friction in the development lifecycle today?",
-        "What technical debt is most top of mind, and how much bandwidth do you have to address it?",
-        "Are there scalability or reliability challenges you&#39;re actively working through?"
+        "What would you most like to improve about how code gets reviewed and merged &#8212; speed, quality, security, or consistency?",
+        "What does a bug that escapes to production cost you today &#8212; in incidents, rework, or customer impact?",
+        "How are you trying to enforce standards (security, architecture, naming) across teams, and how well is that working?",
+        "If you had a reviewer that knew your codebase and conventions, what would you need to see before trusting it on every PR?",
+        "What would have to be true for you to say the review process is fixed a year from now?"
+      ],
+      diy: [
+        "What&#39;s the accuracy bar you need before developers trust and act on a comment? How are you measuring noise vs. signal today?",
+        "Beyond diff-level comments, do you need cross-file or cross-repo understanding &#8212; impact analysis, linked tickets, past PR history? How does your current setup handle that?",
+        "What would you need from the tool that you&#39;d rather not build &#8212; learnings from feedback, per-repo config, reporting, audit trails?"
       ]
     },
     initiatives: {
       icon: '&#128640;', label: 'Active Initiatives',
-      sub: '4 questions to surface what&#39;s in flight',
+      sub: '5 core questions + 3 DIY deep-dive',
       qs: [
-        "Are there any major migrations or platform changes underway right now?",
-        "Any new product launches or features that are creating pressure on the eng team?",
-        "Are you actively hiring engineers &#8212; and how is headcount growth changing team dynamics?",
-        "Is there an AI or ML integration effort happening on the engineering side?"
+        "What projects are in flight right now that will increase PR volume &#8212; migrations, new products, platform rewrites?",
+        "Is there an AI-adoption or developer-productivity program underway? Who sponsors it and what are its goals?",
+        "Has anyone already prototyped or piloted AI code review, internally or with a vendor? What happened, and what&#39;s the status?",
+        "Are there security, compliance, or DevSecOps mandates landing on engineering this year (SOC 2, audit findings, policy changes)?",
+        "What&#39;s your timeline and budget cycle for tooling decisions, and what has to be decided before the next one?"
+      ],
+      diy: [
+        "What does the roadmap for your internal review tool look like over the next two quarters, and how many people are on it?",
+        "What happens to the tool when you add more repos, teams, or languages? Has anyone planned that rollout?",
+        "How do you plan to handle model upgrades or provider changes &#8212; re-tuning prompts, re-validating quality, managing cost shifts?"
       ]
     },
     team: {
       icon: '&#128101;', label: 'Team Structure',
-      sub: '4 questions to understand how they work',
+      sub: '5 core questions + 3 DIY deep-dive',
       qs: [
-        "How many engineers do you have total, and how are they organized into teams?",
-        "How does your code review process work &#8212; who reviews, and what&#39;s the expected turnaround time?",
-        "How do junior and senior engineers collaborate? Is there a formal mentorship or pairing structure?",
-        "Do you have dedicated platform or DevOps engineers, or is that shared responsibility across teams?"
+        "How many developers are there, how are they split into teams, and where are they located?",
+        "Who reviews code today, and how is review work distributed? Is a small group of seniors carrying most of it?",
+        "What&#39;s the policy for approvals &#8212; how many reviewers, who must sign off, and how often are those rules bypassed?",
+        "Who would own and maintain a homegrown review tool &#8212; prompts, model upgrades, false positives, support when it breaks? What would they stop doing to take it on?",
+        "Who else has a say in a tool like this &#8212; security, platform, DevEx, procurement?"
+      ],
+      diy: [
+        "How many engineers have touched the homegrown tool in the last quarter, and roughly what percentage of their time did it take?",
+        "When it produces a bad or noisy comment, who triages it, and how long until it&#39;s fixed?",
+        "If the builder leaves or changes teams, who knows how it works? Is it documented and supported, or does it live in one person&#39;s head?"
       ]
     },
     metrics: {
       icon: '&#128207;', label: 'Metrics &amp; KPIs',
-      sub: '4 questions to learn how they measure success',
+      sub: '5 core questions + 3 DIY deep-dive',
       qs: [
-        "What does your deployment frequency look like &#8212; how often are you shipping to production?",
-        "How do you track code quality &#8212; do you have automated quality gates in your pipeline?",
-        "Do you measure PR cycle time or time-to-merge today? What&#39;s your benchmark?",
-        "How do you define developer productivity &#8212; is that something you actively report on to leadership?"
+        "What do you track today &#8212; cycle time, PR time-to-first-review, deployment frequency, change failure rate?",
+        "How long does a typical PR sit before getting a first review, and how many review rounds does it take to merge?",
+        "How do you measure code quality, and what trend do you see as AI-generated code increases?",
+        "If you&#39;ve built or tried an AI review, how do you measure whether it works &#8212; comments accepted vs. ignored, bugs caught, time saved?",
+        "If senior engineers spend a few hours a week on review, have you put a dollar figure on that &#8212; and what would you do with that time back?"
+      ],
+      diy: [
+        "What&#39;s your monthly token or API spend on review today, and how does it change as PR volume or PR size grows?",
+        "What&#39;s the cost per PR reviewed &#8212; tokens, compute, and maintenance time? How does that look at 2x or 5x your current volume?",
+        "How many comments are accepted vs. dismissed, how many real bugs has it caught, and what&#39;s the time-to-review change since launch? Do you have that data, or is it anecdotal?"
       ]
     }
   };
@@ -409,7 +450,8 @@
     document.getElementById('tq-title').innerHTML = data.label;
     document.getElementById('tq-sub').textContent = data.sub;
     const list = document.getElementById('tq-list');
-    list.innerHTML = data.qs.map(q => '<div class="topic-q-item">' + q + '</div>').join('');
+    list.innerHTML = data.qs.map(q => '<div class="topic-q-item">' + q + '</div>').join('')
+      + (data.diy ? '<div class="topic-q-divider">DIY Deep-Dive &#183; Cost, Tokens, Ops &amp; Scale</div>' + data.diy.map(q => '<div class="topic-q-item diy"><span class="diy-tag">DIY</span>' + q + '</div>').join('') : '');
     const panel = document.getElementById('topic-q-panel');
     panel.classList.remove('visible');
     void panel.offsetWidth;
